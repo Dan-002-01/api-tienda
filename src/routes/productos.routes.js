@@ -5,11 +5,10 @@ import {
     postProducto,
     putProducto,
     deleteProducto
-}
-from '../controladores/productosCtrl.js';
+} from '../controladores/productosCtrl.js';
 
-import { verificarToken }
-from '../middlewares/auth.js';
+import { verificarToken } from '../middlewares/auth.js';
+import upload from '../middlewares/multer.js';
 
 const router = Router();
 
@@ -22,12 +21,14 @@ router.get(
 router.post(
     '/productos',
     verificarToken,
+    upload.single('imagen'),
     postProducto
 );
 
 router.put(
     '/productos/:id',
     verificarToken,
+    upload.single('imagen'),
     putProducto
 );
 
