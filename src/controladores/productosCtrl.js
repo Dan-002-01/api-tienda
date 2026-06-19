@@ -9,10 +9,12 @@ export const getProductos = async (req, res) => {
             'SELECT * FROM productos'
         );
 
+        const baseUrl = process.env.BASE_URL || 'https://api-tienda-dmwf.onrender.com';
+
         const productos = result.map(p => ({
             ...p,
             prod_imagen: p.prod_imagen
-                ? `${process.env.BASE_URL}${p.prod_imagen}`
+                ? `${baseUrl}${p.prod_imagen}`
                 : null
         }));
 
