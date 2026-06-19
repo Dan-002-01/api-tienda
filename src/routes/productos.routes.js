@@ -19,10 +19,10 @@ router.get(
 );
 
 router.post(
-    '/productos',
-    verificarToken,
-    upload.single('imagen'),
-    postProducto
+  '/productos',
+  verificarToken,
+  upload.single('imagen'),
+  postProducto
 );
 
 router.put(
