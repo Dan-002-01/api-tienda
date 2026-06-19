@@ -8,7 +8,7 @@ import {
 } from '../controladores/productosCtrl.js';
 
 import { verificarToken } from '../middlewares/auth.js';
-import upload from '../middlewares/multer.js';
+import upload from '../middlewares/upload.js';
 
 const router = Router();
 
