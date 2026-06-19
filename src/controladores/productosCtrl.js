@@ -48,6 +48,7 @@ export const getProductoById = async (req, res) => {
 ========================= */
 export const postProducto = async (req, res) => {
     try {
+        console.log("Datos recibidos en servidor:", req.body);
         const {
             prod_codigo,
             prod_nombre,
@@ -69,7 +70,10 @@ export const postProducto = async (req, res) => {
         );
 
         res.json({ prod_id: result.insertId });
+        res.status(200).json({ message: "Éxito" });
     } catch (error) {
+        console.error("ERROR REAL EN EL SERVIDOR:", error);
+        res.status(500).json({ error: error.message });
         return res.status(500).json({
             message: "Error en servidor",
             error: error.message
