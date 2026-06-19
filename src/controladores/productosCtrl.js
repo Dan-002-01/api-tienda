@@ -32,6 +32,10 @@ export const getProductos = async (req, res) => {
 ========================= */
 export const postProducto = async (req, res) => {
     try {
+
+        console.log("BODY:", req.body);
+        console.log("FILE:", req.file);
+
         const {
             prod_codigo,
             prod_nombre,
@@ -44,19 +48,6 @@ export const postProducto = async (req, res) => {
             ? `/uploads/${req.file.filename}`
             : null;
 
-        // validar código duplicado
-        const [fila] = await conmysql.query(
-            'SELECT * FROM productos WHERE prod_codigo=?',
-            [prod_codigo]
-        );
-
-        if (fila.length > 0) {
-            return res.status(409).json({
-                id: 0,
-                message: 'Producto con código ' + prod_codigo + ' ya está registrado'
-            });
-        }
-
         const [result] = await conmysql.query(
             `INSERT INTO productos
             (prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen)
@@ -64,9 +55,9 @@ export const postProducto = async (req, res) => {
             [
                 prod_codigo,
                 prod_nombre,
-                prod_stock,
-                prod_precio,
-                prod_activo,
+                Number(prod_stock),
+                Number(prod_precio),
+                Number(prod_activo),
                 prod_imagen
             ]
         );
@@ -74,8 +65,9 @@ export const postProducto = async (req, res) => {
         res.json({ prod_id: result.insertId });
 
     } catch (error) {
+        console.log("🔥 ERROR REAL:", error);
         return res.status(500).json({
-            message: 'Error en el servidor',
+            message: "Error en servidor",
             error: error.message
         });
     }
