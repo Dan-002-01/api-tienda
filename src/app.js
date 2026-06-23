@@ -13,9 +13,10 @@ const app = express();
 
 // 1. Configuración CORS - Permitir todo y los métodos necesarios
 app.use(cors({
-    origin: '*',
+    origin: '*', // Esto sigue permitiendo todo
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Añadimos X-Requested-With
+    credentials: true // Necesario para que el navegador acepte CORS en muchos casos
 }));
 
 // 2. SOLUCIÓN AL ERROR DE RUTA: 
