@@ -48,32 +48,22 @@ export const getProductoById = async (req, res) => {
 ========================= */
 export const postProducto = async (req, res) => {
     try {
-        const {
-            prod_codigo,
-            prod_nombre,
-            prod_stock,
-            prod_precio,
-            prod_activo,
-            prod_imagen // <-- Ahora es un string Base64 que viene en el JSON
-        } = req.body;
-
-        const stockFinal = isNaN(Number(prod_stock)) ? 0 : Number(prod_stock);
-        const precioFinal = isNaN(Number(prod_precio)) ? 0.00 : Number(prod_precio);
-        const activoFinal = (prod_activo === true || prod_activo === 'true' || prod_activo == 1) ? 1 : 0;
+        const { prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen } = req.body;
+        
+        // Log para verificar qué llega
+        console.log("Intentando guardar producto:", prod_nombre);
+        console.log("Tamaño de imagen recibido:", prod_imagen ? prod_imagen.length : "NULA");
 
         const [result] = await conmysql.query(
-            `INSERT INTO productos
-            (prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-            [prod_codigo, prod_nombre, stockFinal, precioFinal, activoFinal, prod_imagen]
+            "INSERT INTO productos (prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen) VALUES (?, ?, ?, ?, ?, ?)",
+            [prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen]
         );
 
-        res.json({ prod_id: result.insertId });
+        res.status(201).json({ id: result.insertId });
     } catch (error) {
-        return res.status(500).json({
-            message: "Error en servidor",
-            error: error.message
-        });
+        // 🌟 ESTA LÍNEA ES LA QUE TE DIRÁ EL ERROR REAL
+        console.error("DETALLE DEL ERROR DE BASE DE DATOS:", error.message);
+        res.status(500).json({ message: "Error interno del servidor", detalle: error.message });
     }
 };
 
