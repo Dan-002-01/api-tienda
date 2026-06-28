@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.js';
 import productosRoutes from './routes/productos.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import pedidosRoutes from './routes/pedidos.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,11 +25,12 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/api', authRoutes);
 app.use('/api', clientesRoutes);
 app.use('/api', productosRoutes);
+app.use('/api', pedidosRoutes);
 
 const uploadsPath = path.resolve(__dirname, '../uploads');
 console.log('📂 Carpeta uploads expuesta en:', uploadsPath);
 app.use('/uploads', express.static(uploadsPath));
-
+app.use('/api', pedidosRoutes);
 app.use((req, res) => {
     res.status(404).json({
         message: 'Endpoint not found'
