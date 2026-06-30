@@ -48,22 +48,50 @@ export const getProductoById = async (req, res) => {
 ========================= */
 export const postProducto = async (req, res) => {
     try {
-        const { prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen } = req.body;
-        
-        // Log para verificar qué llega
+
+        console.log("Datos recibidos en servidor:", req.body);
+
+        const {
+            prod_codigo,
+            prod_nombre,
+            prod_stock,
+            prod_precio,
+            prod_activo,
+            prod_imagen
+        } = req.body;
+
         console.log("Intentando guardar producto:", prod_nombre);
         console.log("Tamaño de imagen recibido:", prod_imagen ? prod_imagen.length : "NULA");
 
+        const stockFinal = isNaN(Number(prod_stock)) ? 0 : Number(prod_stock);
+        const precioFinal = isNaN(Number(prod_precio)) ? 0.00 : Number(prod_precio);
+        const activoFinal = (prod_activo === true || prod_activo === 'true' || prod_activo == 1) ? 1 : 0;
+
         const [result] = await conmysql.query(
-            "INSERT INTO productos (prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen) VALUES (?, ?, ?, ?, ?, ?)",
-            [prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen]
+            `INSERT INTO productos
+            (prod_codigo, prod_nombre, prod_stock, prod_precio, prod_activo, prod_imagen)
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [
+                prod_codigo,
+                prod_nombre,
+                stockFinal,
+                precioFinal,
+                activoFinal,
+                prod_imagen
+            ]
         );
 
-        res.status(201).json({ id: result.insertId });
+        res.status(201).json({
+            prod_id: result.insertId,
+            message: "Producto registrado correctamente"
+        });
+
     } catch (error) {
-        // 🌟 ESTA LÍNEA ES LA QUE TE DIRÁ EL ERROR REAL
-        console.error("DETALLE DEL ERROR DE BASE DE DATOS:", error.message);
-        res.status(500).json({ message: "Error interno del servidor", detalle: error.message });
+        console.error("ERROR REAL EN EL SERVIDOR:", error);
+        return res.status(500).json({
+            message: "Error interno del servidor",
+            detalle: error.message
+        });
     }
 };
 
